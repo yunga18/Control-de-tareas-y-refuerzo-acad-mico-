@@ -30,9 +30,9 @@ const Teacher = (() => {
   function panel(){
     return title('Acceso docente','Yunga School · clases, planificación y evaluación.')+`<div class="card auth-card"><span class="auth-mark" aria-hidden="true">YS</span><h2>Tu espacio para enseñar</h2><p>Entra con tu correo y contraseña. Solo las cuentas autorizadas por la administración pueden abrir el espacio docente.</p>${cloud&&!allowed?'<div class="notice">La sesión se bloqueó. Exporta una copia antes de salir si hay cambios pendientes.</div><div class="actions">'+button('Exportar copia','export')+button('Cerrar sesión','auth-logout','','secondary')+'</div>':!ready?'<div class="notice"><strong>Activación pendiente.</strong> El acceso docente está cerrado hasta conectar el servicio de autenticación. Los estudiantes pueden seguir usando explicaciones, juegos y diagnósticos.</div>':`<form id="teacher-login-form"><div class="field"><label for="teacher-email">Correo del docente</label><input type="email" id="teacher-email" autocomplete="username" required maxlength="254" value="${E(email)}"></div><div class="field"><label for="teacher-password">Contraseña</label><input type="password" id="teacher-password" autocomplete="current-password" required maxlength="1024"></div><button type="submit" class="btn" ${busy?'disabled':''}>${busy?'Comprobando…':'Entrar como docente'}</button><p class="muted"><small>Usa la contraseña de tu cuenta docente. Si la olvidaste, solicita al administrador del proyecto que la restablezca en Supabase.</small></p></form>`}${message?`<p class="auth-message" role="alert">${E(message)}</p>`:''}<p class="muted"><small>El contenido educativo es público. Los registros del espacio docente se almacenan aparte, con permisos comprobados por el servidor.</small></p><a href="#inicio">Volver a mi ruta →</a></div>`;
   }
-  function toolbar(){return `<div class="notice teacher-session"><div><strong>Sesión docente</strong><br>${E(session?.user?.email||'')} · Espacio compartido de profesores<br><small>${E(message||'Los cambios se guardan en la nube. La práctica de otros dispositivos no se recibe automáticamente.')}</small></div><div class="actions">${button('Reintentar guardado','auth-retry','','secondary small')}${button('Cerrar sesión','auth-logout','','secondary small')}</div></div>`;}
+  function toolbar(){return `<div class="notice teacher-session"><div><strong>Sesión docente</strong><br>${E(session?.user?.email||'')} · Espacio compartido de profesores<br><small>${E(message||'Los cambios se guardan en la nube. Actualiza Trabajo en casa para recibir entregas y resultados de las cuentas estudiantiles.')}</small></div><div class="actions">${button('Reintentar guardado','auth-retry','','secondary small')}${button('Cerrar sesión','auth-logout','','secondary small')}</div></div>`;}
   async function login(form){
-    if(!ready||busy||cloud||!form.reportValidity())return;
+    if(!ready||busy||cloud||Classroom.isStudent()||!form.reportValidity())return;
     email=document.querySelector('#teacher-email').value.trim().toLowerCase();
     const password=document.querySelector('#teacher-password').value;
     busy=true;message='';render();
@@ -44,7 +44,7 @@ const Teacher = (() => {
       const data=await rpc('yunga_load_workspace');
       if(!data||typeof data.revision!=='number')throw Error('Falta configurar el espacio docente.');
       const loaded=data.payload===null?freshState():sanitize(data.payload);
-      localState=state;state=loaded;revision=data.revision;pending=null;conflict=false;cloud=true;allowed=true;message='';lessonTab='aprender';game=null;
+      Classroom.resetTeacher();localState=state;state=loaded;revision=data.revision;pending=null;conflict=false;cloud=true;allowed=true;message='';lessonTab='aprender';game=null;
       closeModal();location.hash='docente';
     }catch(error){
       if(session)request('/auth/v1/logout',{},session.access_token).catch(()=>{});
@@ -73,13 +73,14 @@ const Teacher = (() => {
     return !pending;
   }
   async function logout(discard=false){
+    if(Classroom.isBusy()){toast('Espera a que termine la operación.');return;}
     if(saving){toast('Espera a que termine el guardado.');return;}
     if(!discard&&pending&&!(await flush())){
       openModal(`<h2>Hay cambios sin guardar</h2><p>${E(message)}</p><div class="actions">${button('Exportar copia','export')}${button('Seguir trabajando','close-modal','','secondary')}${button('Salir sin guardar','auth-discard','','danger')}</div>`);return;
     }
     const old=session;
     allowed=false;cloud=false;session=null;pending=null;clearTimeout(timer);message='';conflict=false;
-    if(localState)state=localState;localState=null;game=null;lessonTab='aprender';closeModal();location.hash='inicio';render();stamp();
+    Classroom.resetTeacher();if(localState)state=localState;localState=null;game=null;lessonTab='aprender';closeModal();location.hash='inicio';render();stamp();
     if(old)request('/auth/v1/logout',{},old.access_token).catch(()=>{});
   }
   function requireTeacher(){if(allowed&&cloud&&!conflict)return true;location.hash='docente';render();toast(conflict?'Exporta tu copia y vuelve a entrar para resolver el cambio de otro profesor.':'Entra con una cuenta docente autorizada.');return false;}
@@ -87,5 +88,5 @@ const Teacher = (() => {
   document.addEventListener('click',event=>{const a=event.target.closest('[data-action]')?.dataset.action;if(a==='auth-logout')logout();if(a==='auth-discard')logout(true);if(a==='auth-retry')flush();});
   window.addEventListener('beforeunload',event=>{if(cloud&&(pending||saving)){event.preventDefault();event.returnValue='';}});
   window.addEventListener('online',()=>{if(!conflict)flush();});
-  return {ready,panel,toolbar,stamp,requireTeacher,schedule,isAllowed:()=>allowed&&cloud,isCloud:()=>cloud};
+  return {rpc,token,flush,ready,panel,toolbar,stamp,requireTeacher,schedule,isAllowed:()=>allowed&&cloud,isCloud:()=>cloud};
 })();

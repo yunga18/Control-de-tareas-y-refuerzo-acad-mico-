@@ -36,7 +36,9 @@ Estos dos valores son públicos por diseño; los permisos se comprueban en las f
 4. Crea un estudiante con alias, registra una tarea o rúbrica y espera **Guardado en nube**. Cierra sesión y entra otra vez para confirmar la persistencia.
 5. Prueba con una cuenta autenticada no autorizada: no debe poder leer ni guardar el espacio.
 
-Los estudiantes abren el enlace normal sin cuenta y practican en su navegador. Sus resultados no se sincronizan automáticamente: pueden exportar una copia JSON para que el docente la revise e importe desde **Datos y fuentes** en su sesión. La importación añade perfiles como copias. Las rúbricas recibidas se deben revisar con el estudiante; un archivo no demuestra que haya realizado una actividad.
+Para enviar tareas al hogar y recibir entregas con texto, fotos, PDF, audio o videos pequeños, activa la ampliación y prepara cuentas estudiantiles siguiendo [TRABAJO-EN-CASA.md](./TRABAJO-EN-CASA.md). Los estudiantes con cuenta asociada ven solo su propio perfil. Sus juegos y pruebas completadas se incorporan al actualizar **Trabajo en casa**. Desde ese panel puedes revisar, solicitar correcciones y marcar o reabrir el dominio de temas con una justificación.
+
+La práctica sin cuenta permanece en el navegador. Se puede exportar una copia JSON para revisión e importación docente desde **Datos y fuentes**. La importación añade perfiles nuevos: no vincula automáticamente una cuenta ni combina las entregas de un perfil existente. Un archivo o una puntuación de práctica no sustituye tu valoración de una actuación real.
 
 ## 5. Añadir al segundo profesor
 
