@@ -25,7 +25,7 @@ No requiere compilación. Para probar localmente ejecuta `python -m http.server 
 
 ## Datos y límites
 
-La práctica estudiantil se guarda en localStorage en el navegador del dispositivo. Se conserva la clave antigua `aula-semilla-v1` para no borrar el progreso existente. El espacio docente, cuando se activa, utiliza autenticación por código de correo y un documento privado en Supabase compartido entre un máximo de dos docentes autorizados. La cuenta inicial es `yungabryam32@gmail.com`. No se reciben automáticamente los resultados de dispositivos estudiantiles: pueden exportar sus copias para revisión e importación docente. Las evidencias locales/importadas no acreditan por sí solas una valoración docente verificada. Los registros no se guardan en GitHub. Usar alias es posible. Exporta copias periódicas y antes de borrar los datos del navegador. El historial conserva los últimos 1000 registros por perfil. Las actividades admiten hasta 500 tareas por perfil. Las copias admitidas tienen hasta 5 MB.
+La práctica estudiantil se guarda en localStorage en el navegador del dispositivo. Se conserva la clave antigua `aula-semilla-v1` para no borrar el progreso existente. El espacio docente, cuando se activa, utiliza autenticación por correo y contraseña y un documento privado en Supabase compartido entre un máximo de dos docentes autorizados. La cuenta inicial es `yungabryam32@gmail.com`. No se reciben automáticamente los resultados de dispositivos estudiantiles: pueden exportar sus copias para revisión e importación docente. Las evidencias locales/importadas no acreditan por sí solas una valoración docente verificada. Los registros no se guardan en GitHub. Usar alias es posible. Exporta copias periódicas y antes de borrar los datos del navegador. El historial conserva los últimos 1000 registros por perfil. Las actividades admiten hasta 500 tareas por perfil. Las copias admitidas tienen hasta 5 MB.
 
 No se graba voz, cámara o video; las exposiciones y prácticas son observadas por el docente. No hay puntuación automática de actuaciones reales. Los juegos digitales comprueban relaciones y secuencias, no sustituyen la evidencia corporal, artística u oral.
 
@@ -49,7 +49,7 @@ El contenido explicativo, preguntas y actividades son una elaboración propia. R
 - `styles.css`: diseño adaptable a celular, escritorio e impresión.
 - `curriculum.js`: banco inicial de contenidos y actividades.
 - `app.js`: perfiles, ruta, evaluaciones, juegos, rúbricas y copias.
-- `teacher-auth.js`: acceso por código, comprobación de rol en el servidor y guardado docente con control de versiones.
+- `teacher-auth.js`: acceso por correo y contraseña, comprobación de rol en el servidor y guardado docente con control de versiones.
 - `auth-config.js`: URL y clave pública del proyecto, inicialmente vacías.
 - `supabase/setup.sql`: autorización y almacenamiento privado.
 - `DOCENTES.md`: pasos para activar el servicio y añadir al segundo docente.
@@ -62,4 +62,4 @@ Para una actualización, incrementa el nombre de caché en `sw.js`. Si añades a
 
 Consulta [DOCENTES.md](./DOCENTES.md). **El acceso permanece cerrado hasta completar la configuración.** Escribir un correo en la web no da permiso. La lista de autorizaciones está en un esquema privado y solo el administrador del proyecto puede modificarla. Las funciones del servidor verifican la identidad confirmada de Supabase; usuarios no autorizados no pueden leer ni guardar el espacio. No se guardan tokens en localStorage ni se incluyen registros privados en el service worker. Las guías y preguntas son contenido estático público: el control protege los registros docentes, no oculta los archivos del repositorio.
 
-El guardado usa una revisión del documento: si dos profesores editan a la vez, el servidor rechaza la versión antigua y la interfaz pide exportar una copia y volver a entrar. No combina cambios automáticamente. Comprueba «Guardado en nube» antes de cerrar. La sesión vive en memoria y se renueva mientras la pestaña está abierta; recargar requiere otro código.
+El guardado usa una revisión del documento: si dos profesores editan a la vez, el servidor rechaza la versión antigua y la interfaz pide exportar una copia y volver a entrar. No combina cambios automáticamente. Comprueba «Guardado en nube» antes de cerrar. La sesión vive en memoria y se renueva mientras la pestaña está abierta; recargar requiere iniciar sesión de nuevo.
