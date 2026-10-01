@@ -188,4 +188,41 @@ using(bucket_id='yunga-entregas' and public.yunga_file_delete_allowed(name));
 revoke all on all functions in schema yunga_private from public,anon,authenticated;
 revoke all on function public.yunga_class_teacher(text),public.yunga_class_enroll(text,text),public.yunga_class_home(),public.yunga_class_sync(jsonb),public.yunga_class_submit(text,text,text,jsonb),public.yunga_class_review(uuid,integer,text,text),public.yunga_class_mastery(text,text,boolean,text),public.yunga_class_clear_files(uuid),public.yunga_file_read_allowed(text),public.yunga_file_write_allowed(text),public.yunga_file_delete_allowed(text) from public,anon;
 grant execute on function public.yunga_class_teacher(text),public.yunga_class_enroll(text,text),public.yunga_class_home(),public.yunga_class_sync(jsonb),public.yunga_class_submit(text,text,text,jsonb),public.yunga_class_review(uuid,integer,text,text),public.yunga_class_mastery(text,text,boolean,text),public.yunga_class_clear_files(uuid),public.yunga_file_read_allowed(text),public.yunga_file_write_allowed(text),public.yunga_file_delete_allowed(text) to authenticated;
+-- Gestión de pruebas: solo docentes, revisión optimista y borrado por perfil.
+create or replace function public.yunga_class_cleanup_preview(p_student text,p_revision integer)
+returns jsonb language plpgsql security definer set search_path='' as $$
+begin
+ if not public.yunga_is_teacher() then raise insufficient_privilege;end if;
+ if not exists(select 1 from public.yunga_workspace where id=1 and revision=p_revision) then raise sqlstate '40001' using message='Otro docente actualizó el espacio; vuelve a entrar antes de borrar';end if;
+ if yunga_private.profile(p_student) is null then raise exception 'El perfil ya no existe';end if;
+ return jsonb_build_object('files',coalesce((select jsonb_agg(name) from storage.objects where bucket_id='yunga-entregas' and split_part(name,'/',1)=p_student),'[]'::jsonb));
+end $$;
+create or replace function public.yunga_class_cleanup(p_student text,p_revision integer,p_mode text)
+returns jsonb language plpgsql security definer set search_path='' as $$
+declare w public.yunga_workspace;list jsonb;s jsonb;active_id text;
+begin
+ if not public.yunga_is_teacher() then raise insufficient_privilege;end if;
+ if p_mode is null or p_mode not in ('reset','delete') then raise exception 'Acción no válida';end if;
+ select * into w from public.yunga_workspace where id=1 for update;
+ if w.revision is distinct from p_revision then raise sqlstate '40001' using message='Otro docente actualizó el espacio; vuelve a entrar antes de borrar';end if;
+ if yunga_private.profile(p_student) is null then raise exception 'El perfil ya no existe';end if;
+ if exists(select 1 from storage.objects where bucket_id='yunga-entregas' and split_part(name,'/',1)=p_student) then raise exception 'No se borraron todos los archivos; reintenta antes de eliminar los registros';end if;
+ if p_mode='delete' then
+  select coalesce(jsonb_agg(x order by n),'[]'::jsonb) into list from jsonb_array_elements(w.payload->'students') with ordinality a(x,n) where x->>'id'<>p_student;
+  if jsonb_array_length(list)=0 then list:=jsonb_build_array(jsonb_build_object('id',gen_random_uuid()::text,'name','Mi estudiante','logs','[]'::jsonb,'tasks','[]'::jsonb,'quiz',null));end if;
+  delete from yunga_private.class_students where student_id=p_student;
+ else
+  select jsonb_agg(case when x->>'id'=p_student then x||jsonb_build_object('logs','[]'::jsonb,'tasks','[]'::jsonb,'quiz',null) else x end order by n) into list from jsonb_array_elements(w.payload->'students') with ordinality a(x,n);
+  delete from yunga_private.class_events where student_id=p_student;
+  delete from yunga_private.class_submissions where student_id=p_student;
+  delete from yunga_private.class_mastery where student_id=p_student;
+ end if;
+ active_id:=w.payload->>'active';
+ if not exists(select 1 from jsonb_array_elements(list) x where x->>'id'=active_id) then active_id:=list->0->>'id';end if;
+ update public.yunga_workspace set payload=w.payload||jsonb_build_object('students',list,'active',active_id),revision=revision+1,updated_at=now(),updated_by=auth.uid() where id=1;
+ return (select jsonb_build_object('payload',payload,'revision',revision) from public.yunga_workspace where id=1);
+end $$;
+revoke all on function public.yunga_class_cleanup_preview(text,integer),public.yunga_class_cleanup(text,integer,text) from public,anon;
+grant execute on function public.yunga_class_cleanup_preview(text,integer),public.yunga_class_cleanup(text,integer,text) to authenticated;
+
 commit;

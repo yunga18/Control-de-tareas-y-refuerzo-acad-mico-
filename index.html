@@ -6,25 +6,17 @@
   <title>Yunga School · Aprender paso a paso</title>
   <link rel="icon" href="./icon.svg" type="image/svg+xml"><link rel="manifest" href="./manifest.webmanifest"><link rel="stylesheet" href="./styles.css">
 </head>
-<body>
+<body class="access-mode">
   <a class="skip" href="#main">Ir al contenido</a>
   <div class="shell">
     <aside class="sidebar">
       <a class="brand" href="#inicio"><span class="brand-icon">YS</span><span>Yunga School<small>REFUERZO · 6.º EGB</small></span></a>
       <div class="student-select"><label for="student">Estudiante activo</label><select id="student" aria-label="Estudiante activo"></select><button class="text-button" id="add-student">+ Nuevo estudiante</button></div>
-      <nav aria-label="Navegación principal" id="nav">
-        <a href="#inicio" data-page="inicio"><span>⌂</span> Mi ruta</a>
-        <a href="#areas" data-page="areas"><span>▦</span> Explorar temas</a>
-        <a href="#diagnostico" data-page="diagnostico"><span>◎</span> Diagnóstico</a>
-        <a href="#tareas" data-page="tareas"><span>☑</span> Clases y tareas</a>
-        <a href="#estudiante" data-page="estudiante"><span>▣</span> Acceso estudiante</a>
-        <a href="#docente" data-page="docente"><span>◇</span> Panel docente</a>
-        <a href="#progreso" data-page="progreso"><span>↗</span> Progreso</a>
-      </nav>
+      <nav aria-label="Navegación principal" id="nav"></nav>
       <div class="sidebar-note"><span>✦</span><p>Cada pequeño logro<br>abre un camino nuevo.</p></div>
       <a class="source-link" href="#ajustes">Datos y fuentes ↗</a>
     </aside>
-    <div class="workspace"><header class="topbar"><span class="eyebrow">APRENDER CON SENTIDO</span><div><span id="access-label">Estudiante · práctica local</span><span id="profile-label"></span><span class="avatar">YS</span></div></header><main id="main" tabindex="-1"></main><footer>Hecho para acompañar, practicar y descubrir. <a href="#ajustes">Copias de seguridad y fuentes</a></footer></div>
+    <div class="workspace"><header class="topbar"><span class="eyebrow">APRENDER CON SENTIDO</span><div><span id="access-label">Estudiante · práctica local</span><span id="profile-label"></span><span class="avatar">YS</span><span id="session-tools"></span></div></header><main id="main" tabindex="-1"></main><footer>Hecho para acompañar, practicar y descubrir. <a href="#ajustes">Copias de seguridad y fuentes</a></footer></div>
   </div>
   <dialog id="modal"><div id="modal-content"></div><button class="modal-close" aria-label="Cerrar ventana">×</button></dialog>
   <div id="toast" role="status" aria-live="polite"></div>

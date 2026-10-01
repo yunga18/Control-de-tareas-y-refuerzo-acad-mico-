@@ -66,3 +66,11 @@ La regla automática pide una última prueba del tema de al menos 75 % y la últ
 - Las sesiones docentes y estudiantiles viven en memoria; recargar requiere volver a entrar. No se guardan las contraseñas ni los datos privados de las cuentas en el caché offline o localStorage. Cierra sesión al usar una computadora compartida.
 
 Fuentes oficiales: https://supabase.com/pricing · https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages · https://supabase.com/docs/guides/storage/security/access-control
+
+## Accesos separados y borrado de pruebas
+
+La portada ofrece **Soy estudiante** y **Soy docente**. Después de entrar, cada rol tiene su propio menú. La práctica sin cuenta está disponible aparte. Para el docente, **Administrar estudiantes** aparece en el menú y como enlace en el panel; en celular puedes deslizar el menú horizontal.
+
+Selecciona primero el perfil que utilizaste para probar. En **Administrar estudiantes** puedes **Borrar datos de prueba**, que conserva su perfil y asociación de acceso, o **Eliminar estudiante**, que retira también el perfil y su asociación. Ambas acciones eliminan tareas, resultados, intentos, entregas, adjuntos y valoraciones de ese perfil; los demás perfiles se conservan. Confirma solo después de exportar lo que quieras guardar. No se elimina la cuenta de Authentication de Supabase. Las casillas de tareas y la eliminación de una tarea siguen gestionando la planificación.
+
+Si ya instalaste la ampliación anterior, vuelve a ejecutar el contenido completo y actualizado de `supabase/classroom.sql` para habilitar el borrado en nube. Si no está instalado, la interfaz mostrará los pasos y no dará por borrados los registros. Borrar archivos y borrar registros son dos operaciones: ante un fallo de red o un conflicto con otro docente, algunos archivos podrían haberse retirado aunque los registros sigan presentes; reintenta y comprueba el resultado. Sin cuenta, el borrado solo afecta a los datos de práctica de este dispositivo.

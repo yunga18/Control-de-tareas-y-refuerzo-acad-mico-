@@ -4,6 +4,9 @@ App estática de refuerzo para sexto de EGB, orientada a preparar el aprendizaje
 
 ## Funciones
 
+- Portada con accesos separados para estudiantes y docentes, y menús según el rol.
+- Administración visible de estudiantes: borrar pruebas de un perfil o eliminarlo, con confirmación y limpieza de sus entregas privadas.
+
 - 41 módulos iniciales: Matemática, Lengua y Literatura, Ciencias Naturales, Estudios Sociales, Inglés, Educación Cultural y Artística, Educación Física y habilidades para la vida.
 - 123 preguntas propias con explicaciones; diagnóstico por área o global, con una pregunta por tema y guardado del intento en curso.
 - Juegos de parejas y puzzles de secuencias, operables sin arrastrar y sin cronómetro.
