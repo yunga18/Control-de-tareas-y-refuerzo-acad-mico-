@@ -111,7 +111,7 @@ begin
 end $$;
 create or replace function public.yunga_class_submit(p_task text,p_answer text,p_link text,p_files jsonb)
 returns void language plpgsql security definer set search_path='' as $$
-declare sid text;f jsonb;count_files integer;
+declare sid text;f jsonb;count_files integer;clean_files jsonb:='[]'::jsonb;
 begin
  sid:=yunga_private.my_student();if sid is null or not yunga_private.has_task(sid,p_task) then raise insufficient_privilege;end if;
  if p_answer is null or length(p_answer)>10000 or p_link is null or length(p_link)>2000 or (p_link<>'' and p_link !~ '^https?://') then raise exception 'Respuesta o enlace no válido';end if;
@@ -120,12 +120,13 @@ begin
  for f in select * from jsonb_array_elements(p_files) loop
   if f->>'path' is null or f->>'path' not like sid||'/'||p_task||'/%' or not exists
     (select 1 from storage.objects where bucket_id='yunga-entregas' and name=f->>'path')
-    or length(coalesce(f->>'name',''))>180 then raise exception 'Archivo no válido';end if;
+    or jsonb_typeof(f->'name') is distinct from 'string' or length(f->>'name') not between 1 and 180 then raise exception 'Archivo no válido';end if;
+  clean_files:=clean_files||jsonb_build_array(jsonb_build_object('path',f->>'path','name',f->>'name'));
  end loop;
  perform pg_advisory_xact_lock(hashtext(sid||p_task));
  if exists(select 1 from yunga_private.class_submissions where student_id=sid and task_id=p_task and state='revisado') then raise exception 'Tu docente debe pedir una corrección antes de reenviar';end if;
  insert into yunga_private.class_submissions(student_id,task_id,answer,link,files)
- values(sid,p_task,p_answer,p_link,p_files)
+ values(sid,p_task,p_answer,p_link,clean_files)
  on conflict(student_id,task_id) do update set answer=excluded.answer,link=excluded.link,files=excluded.files,state='enviado',revision=yunga_private.class_submissions.revision+1,submitted_at=now(),reviewed_at=null;
 end $$;
 create or replace function public.yunga_class_review(p_id uuid,p_revision integer,p_state text,p_feedback text)
