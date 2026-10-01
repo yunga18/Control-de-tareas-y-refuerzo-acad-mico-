@@ -1,6 +1,6 @@
 # Activar el acceso docente de Yunga School
 
-El cambio visual funciona en GitHub Pages. El inicio de sesión necesita un proyecto Supabase: **todavía no está conectado**. El panel permanece cerrado mientras las dos propiedades de `auth-config.js` estén vacías.
+La web está configurada para el proyecto Supabase `xfrfzrzwovuienairgmd`. Los docentes entran con correo y contraseña. El acceso requiere que el SQL de autorización esté instalado y la cuenta esté creada y confirmada. Estos pasos sirven para verificar la configuración o preparar otro proyecto.
 
 ## 1. Crear y preparar el proyecto
 
