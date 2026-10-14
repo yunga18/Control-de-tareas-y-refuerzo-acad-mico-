@@ -1,3 +1,5 @@
+> **Documentación de la versión anterior.** La versión actual es un espacio de juegos para una sola estudiante, sin acceso docente ni Supabase. Consulta [README.md](./README.md) para usarla. No ejecutes estos pasos para activar los juegos actuales.
+
 # Tareas y entregas en Yunga School
 
 Esta ampliación funciona con la web actual de GitHub Pages y el proyecto Supabase ya conectado. No requiere contratar una suscripción. Debes mantener el proyecto en **Free** y trabajar dentro de sus límites; no habilites un plan de pago para estos pasos.

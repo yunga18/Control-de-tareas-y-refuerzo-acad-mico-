@@ -1,2 +1,1 @@
-{"name":"Yunga School · Refuerzo académico","short_name":"Yunga School","lang":"es","start_url":"./","scope":"./","display":"standalone","background_color":"#ffffff","theme_color":"#123c8c","icons":[{"src":"./icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any"}]}
-
+{"name": "Yunga School · Mi aventura de aprender", "short_name": "Yunga School", "lang": "es", "start_url": "./", "scope": "./", "display": "standalone", "background_color": "#f5f8fe", "theme_color": "#10387b", "icons": [{"src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any"}]}

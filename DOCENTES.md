@@ -1,3 +1,5 @@
+> **Documentación de la versión anterior.** La versión actual es un espacio de juegos para una sola estudiante, sin acceso docente ni Supabase. Consulta [README.md](./README.md) para usarla. No ejecutes estos pasos para activar los juegos actuales.
+
 # Activar el acceso docente de Yunga School
 
 La web está configurada para el proyecto Supabase `xfrfzrzwovuienairgmd`. Los docentes entran con correo y contraseña. El acceso requiere que el SQL de autorización esté instalado y la cuenta esté creada y confirmada. Estos pasos sirven para verificar la configuración o preparar otro proyecto.
