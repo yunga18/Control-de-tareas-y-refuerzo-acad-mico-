@@ -94,7 +94,7 @@ function store(){try{var v=JSON.parse(localStorage.getItem(KEY)||'{}');return v&
 function score(v){return Number.isInteger(v)&&v>=0&&v<=3?v:0;}
 function stars(){return state.errors===0&&state.hints===0?3:state.errors<=3?2:1;}
 function save(mode,value){try{var data=store();data[mode]=Math.max(score(data[mode]),value);localStorage.setItem(KEY,JSON.stringify(data));}catch(e){feedback('Puedes seguir jugando, pero este navegador no permite guardar el avance.',false);}}
-function msg(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;':'&quot;',"'":'&#39;'}[c];});}
+function msg(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function switchTab(id){document.querySelectorAll('.tab').forEach(function(b){b.setAttribute('aria-selected',String(b.dataset.tab===id));});document.querySelectorAll('.panel').forEach(function(p){p.hidden=p.id!=='panel-'+id;});if(id==='repasar')renderAchievements();if(id==='jugar'&&!state)renderChoices();}
 function feedback(message,good){var box=$('#feedback');if(!box)return;box.textContent=message;box.className='feedback '+(good?'good':'bad');box.setAttribute('role','status');}
 function updateProgress(){var p=$('#game-progress');if(p&&state)p.style.width=(state.done/state.total*100)+'%';var s=$('#counter');if(s&&state)s.textContent=state.done+' de '+state.total+' completados';}
